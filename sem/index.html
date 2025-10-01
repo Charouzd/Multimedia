@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script src="https://kit.fontawesome.com/4e7b80b1e6.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    </head>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+        <main style="min-height:100vh;width:100%;display:flex;justify-content:center;align-items:center;flex-direction:column">
+            <h1 style="text-decoration:underline;margin:1rem">PG1 2023/24 -> PONG</h1>
+            <form class="width:75%; margin 2rem" id='userForm'>
+                <div style="margin: 2rem 0;" class="form-group">
+                    <div style="display: flex;"><label style="margin-right: 3rem;" for="AI"><h3>Hra proti AI</h3></label>
+                    <input style="width: 2rem;" class="form-control" type="checkbox" id="AI" name="AI"></div>
+                    <label><h3>Schopnosti AI protivníka</h3></label>
+                    <div style="display: flex;"><h6>Lenochod</h6> <input style="margin: 0 2rem;" type="range" name="AIspeed" step="0.001" value="0.05" min="0.009"  max="0.09" class="form-control-range" id="AIspeed"> <h6>Neporazitelný král pongu</h6></div>
+                </div>
+                <div class="form-group">
+                    <label for="cap"><h3>Na kolik výtězných bodu se bude hrát</h3></label>
+                    <div style="display: flex; justify-content:center;align-items:baseline"><h6>1</h6> <input style="margin: 0 2rem;" type="range" class="form-control-range" id="cap" name="cap" min="1" max="13" step="1" value="13"> <h6>13</h6></div>
+
+                    
+                  </div>
+                <div class="form-group">
+                    <label><h3>Pálka Hráče č.1</h3></label>
+                    <select id="P1" name="P1" class="form-control">
+                        <option selected value="/fire.jpg">Oheň</option>
+                        <option value="/ice.jpg">Led</option>
+                        <option value="/iron.jpg">Železo</option>
+                        <option value="/melone.avif">Meloun</option>
+                        <option value="/wall.png">Dřevěná zeď</option>¨
+                        <option value="/stop.jpg">Nebezpečná zóna</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><h3>Pálka Hráče č.2</h3></label>
+                    <select id="P2" name="P2" class="form-control">
+                        <option value="/fire.jpg">Oheň</option>
+                        <option selected value="/ice.jpg">Led</option>
+                        <option value="/iron.jpg">Železo</option>
+                        <option value="/melone.avif">Meloun</option>
+                        <option value="/wall.png">Dřevěná zeď</option>
+                        <option value="/stop.jpg">Nebezpečná zóna</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><h3>Míček</h3></label>
+                    <select id="Ball" name="Ball" class="form-control">
+                        <option value="/fire.jpg">Oheň</option>
+                        <option value="/ice.jpg">Led</option>
+                        <option value="/iron.jpg">Železo</option>
+                        <option selected value="/melone.avif">Meloun</option>
+                        <option value="/radiation.jpg">Radiace</option>
+                        <option value="tenis.jpg">Tenisák</option>
+                    </select>
+                </div>
+                <p>
+                    <input class="btn btn-primary mb-2" type="submit" name="submit" id="sub" value="Začít hrát">
+                    <button class="btn btn-warning mb-2" type="button" data-toggle="collapse" data-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                      Ovládání
+                    </button>
+                  </p>
+                </form>
+                  <div style="min-height: 120px; width: 33%;">
+                    <div class="collapse" style="width: 100%;" id="collapseWidthExample">
+                      <div class="card card-body" style="width: 100%; text-align:center" >
+                        <span class="text-success" >Hráč 1(zelený)</span> -> Levá strana<br>
+                    <span class="text-danger">Hráč 2(červený)</span> -> Pravá strana<br>
+
+                        <h4>Ovládání:</h4>
+                        <div style="display: flex; align-items: flex-start;justify-content: center;">
+                            <div style="border: solid 2px #000000;width:5rem;margin:0 1rem">Mezerník</div> -> Rozehrát míč (začít)</div>
+                            <h6>Hráč 1:</h6> 
+                            <div><i class="fa-solid fa-w"></i> -> Pohyb nahoru<br></div>
+                        <div><i class="fa-solid fa-s"></i> -> Pohyb dolu<br></div>
+                            <h6>Hráč 2:</h6>
+                        <div><i class="fa-solid fa-up-long"></i> -> Pohyb nahoru<br><div>
+                        <div><i class="fa-solid fa-down-long"></i> -> Pohyb dolu<br></div>
+                           
+                                               
+                      </div>
+                    </div>
+                  </div>
+                
+            
+            <script>
+                document.getElementById('userForm').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+        
+                    // Get form data
+                    const formData = new FormData(document.getElementById('userForm'));
+        
+                    // Serialize the form data into a query string
+                    const queryString = new URLSearchParams(formData).toString();
+        
+                    // Redirect to index.html with form data as parameters
+                    window.location.href = `game.html?${queryString}`;
+                });
+            </script>
+        </main>
+    </body>
+</html>
