@@ -10,9 +10,9 @@ const playerSpeed=0.05;
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 var cap = 13;
-var P1 = "/fire.jpg";
-var P2 = "/ice.jpg";
-var B = "/melone.jpg"
+var P1 = "media/img/fire.jpg";
+var P2 = "media/img/ice.jpg";
+var B = "media/img/melone.jpg"
 if(params.cap){cap = parseInt(params.cap);}
 if(params.P1){P1 = params.P1;}
 if(params.P2){P2 = params.P2;}
@@ -26,31 +26,31 @@ if(params.AI){AI = true;AIspeed=parseFloat(params.AIspeed)}
  */
 
 const over = new Howl({
-    src: ['over.wav'],
+    src: ['media/sound/over.wav'],
     volume: 1,
     html5: true,
     // preload: true,
 });
 const hit = new Howl({
-    src: ['hit.wav'],
+    src: ['media/sound/hit.wav'],
     volume: 0.5,
     html5: true,
     // preload: true,
 });
 const fail = new Howl({
-    src: ['fail.mp3'],
+    src: ['media/sound/fail.mp3'],
     volume: 1,
     html5: true,
     // preload: true,
 });
 const start = new Howl({
-    src: ['start.mp3'],
+    src: ['media/sound/start.mp3'],
     volume: 1,
     html5: true,
     // preload: true,
 });
 const win = new Howl({
-    src: ['win.mp3'],
+    src: ['media/sound/win.mp3'],
     volume: 1,
     html5: true,
     // preload: true,
@@ -304,6 +304,9 @@ function moveBall() {
     moveAI();
 
     //kontrola kolize s pálkou
+    /**
+     * Tady je potřeba vyřešit kolizi se spodní stranou pálky
+     */
     if(player2BoundingBox.intersectsBox(new THREE.Box3().setFromObject(ball))) {
         ball.position.x-=ballSpeed;
         hit.play();

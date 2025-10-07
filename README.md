@@ -1,6 +1,6 @@
 # Pong - Multimédia
 
-![Pong Logo](.sem/logo.png)
+![Pong Logo](.sem/media/img/logo.png)
 
 ## 📋 O Projektu
 
@@ -25,7 +25,7 @@ Hru si můžete velmi snadno spustit lokálně na svém počítači.
     ```bash
     python -m http.server 8000
     ```
-    *(Pokud používáte Python 2, použijte příkaz `python -m SimpleHTTPServer 8000`).*
+    *(Pokud používáte Python 2, použijte příkaz `python -m http.server 8000`).*
 4.  **Spuštění hry:** Ve svém prohlížeči přejděte na adresu:
     `http://localhost:8000`
 
@@ -54,7 +54,7 @@ Hru si můžete velmi snadno spustit lokálně na svém počítači.
 
 Následující obrázek znázorňuje jednotlivé elementy, se kterými se během hry setkáte.
 
-![Popis Hřiště Pong](./game_elements.png)
+![Popis Hřiště Pong](sem/media/img/map.png)
 
 **Vysvětlivky k obrázku:**
 *   **A:** Hráč 1 (LEVÝ) - Skóre
