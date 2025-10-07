@@ -1,6 +1,6 @@
 # Pong - Multimédia
 
-![Pong Logo](.sem/media/img/logo.png)
+![Pong Logo](sem/media/img/logo.png)
 
 ## 📋 O Projektu
 
