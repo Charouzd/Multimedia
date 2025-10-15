@@ -1,2 +1,0 @@
-decodeURI();
-document.getElementById("video");
