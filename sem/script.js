@@ -108,6 +108,7 @@ document.body.appendChild(renderer.domElement);
 /**
  * playground
  */
+
 // Create a square area around the cube
 const cubeW=10;
 const cubeH=6;
