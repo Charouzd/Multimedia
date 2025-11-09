@@ -1,3 +1,9 @@
+import * as THREE from 'three';
+
+// Načtení video elementů
+const p1Video = document.getElementById('p1GoalVideo');
+const p2Video = document.getElementById('p2GoalVideo');
+const backgroundOverlay = document.getElementById('backgroundOverlay');
 import * as THREE from 'three'; 
 /** Vítejte v Pongu **/
 
@@ -49,6 +55,50 @@ const win = new Howl({
     html5: true,
 });
 
+const p1GoalAudio = new Howl({
+    src: ['media/sound/p1_goal.mp3'] // Nahraďte vaší cestou
+});
+const p2GoalAudio = new Howl({
+    src: ['media/sound/p2_goal.mp3'] // Nahraďte vaší cestou
+});
+
+// Create a scene
+const scene = new THREE.Scene();
+var endgame=false;
+var xdir=false;
+var ydir=false;
+var P1Count=0;
+var P2Count=0;
+var gameOn=false;
+var isVideoPlaying = false;
+var yBallspeed=0.06;
+var ballSpeed = 0.06;
+const pressedKeys = {};
+const KeyActions = {
+    87: () => { var tmp=player1.position.y - playerSpeed;if(tmp<=-(cubeH / 2)+(LPH/2)){player1.position.y=-(cubeH / 2)+(LPH/2);}else{player1.position.y=tmp}player1BoundingBox.setFromObject(player1);}, // W key
+    83: () => { var tmp=player1.position.y + playerSpeed;if(tmp>=(cubeH / 2)-(LPH/2)){player1.position.y=(cubeH / 2)-(LPH/2);}else{player1.position.y=tmp}player1BoundingBox.setFromObject(player1);}, // S key
+    38: () => { var tmp=player2.position.y - playerSpeed;if(tmp<=-(cubeH / 2)+(LPH/2)){player2.position.y=-(cubeH / 2)+(LPH/2);}else{player2.position.y=tmp}player2BoundingBox.setFromObject(player2); }, // UP arrow
+    40: () => { var tmp=player2.position.y + playerSpeed;if(tmp>=(cubeH / 2)-(LPH/2)){player2.position.y=(cubeH / 2)-(LPH/2);}else{player2.position.y=tmp}player2BoundingBox.setFromObject(player2); },
+    32:()=>{if(!gameOn && !isVideoPlaying){gameOn=!gameOn;firstMove(); start.play()}}  // DOWN arrow
+};
+function handleKeyDown(event) {
+    pressedKeys[event.keyCode] = true;
+}
+
+function handleKeyUp(event) {
+    pressedKeys[event.keyCode] = false;
+}
+
+function handleKeyPress() {
+    for (const keyCode in pressedKeys) {
+        if (pressedKeys[keyCode]) {
+            const action = KeyActions[keyCode];
+            if (action) {
+                action();
+            }
+        }
+    }
+}
 // Create a scene
 const scene = new THREE.Scene();
 var endgame = false;
@@ -237,6 +287,30 @@ function firstMove() {
 /*
  * Padnul gól
  */
+//bod pro P1
+function P2scores(){
+    // Vytvoření obdélníku
+    if(AI && P2Count<cap*0.8){fail.play();}
+
+    isVideoPlaying = true; // 1. Okamžitě zamknout hru
+
+    // 2. Zobrazit pozadí (ale je stále průhledné)
+    backgroundOverlay.style.display = 'block';
+
+    // 3. Spustit fade-in
+    requestAnimationFrame(() => {
+        backgroundOverlay.style.opacity = '0.8';
+    });
+    
+    // 4. Počkat 1 sekundu
+    setTimeout(() => {
+        // 5. Spustit video a zvuk
+        p2Video.style.display = 'block';
+        p2Video.style.opacity = '1';
+        p2Video.play();
+        p2GoalAudio.play();
+    }, 1000); // za jak dlouho se spustí video po zobrazování overlaye
+
 function P2scores() {
     if (AI && P2Count < cap * 0.8) { fail.play(); }
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
@@ -247,6 +321,33 @@ function P2scores() {
     gameOn = !gameOn;
     return GP;
 }
+//Bod pro P2
+function P1scores(){
+    // Vytvoření obdélníku
+    if(AI && P1Count<cap*0.8){win.play();}
+
+
+    isVideoPlaying = true; // 1. Okamžitě zamknout hru
+
+    // 2. Zobrazit pozadí (ale je stále průhledné)
+    backgroundOverlay.style.display = 'block';
+
+    // 3. Spustit fade-in (změna opacity aktivuje CSS transition)
+    // Používám 80% opacitu, 100% (hodnota '1') je příliš tmavá. Můžete změnit.
+    requestAnimationFrame(() => { // (zajistí plynulý start animace)
+        backgroundOverlay.style.opacity = '0.8'; 
+    });
+
+    // 4. Počkat 1 sekundu (1000ms), než se pozadí dokončí
+    setTimeout(() => {
+        // 5. Po dokončení fade-in spustit video a zvuk
+        p1Video.style.display = 'block';
+        p1Video.style.opacity = '1';
+        p1Video.play();
+        p1GoalAudio.play();
+    }, 1000); // za jak dlouho se spustí video po zobrazování overlaye 
+
+
 
 function P1scores() {
     if (AI && P1Count < cap * 0.8) { win.play(); }
@@ -430,6 +531,23 @@ window.addEventListener('resize', () => {
 window.addEventListener('keydown', handleKeyDown, false);
 window.addEventListener('keyup', handleKeyUp, false);
 
+
+// Nový kód:
+function onVideoEnd(videoElement) {
+    videoElement.style.display = 'none'; // Skrýt video
+    videoElement.fadeStarted = false;    // <-- PŘIDAT: Reset vlajky
+    videoElement.currentTime = 0;
+    
+    // PŘIDÁNO:
+    backgroundOverlay.style.display = 'none'; // Okamžitě skrýt pozadí
+    backgroundOverlay.style.opacity = '0';   // Resetovat opacitu pro příští gól
+
+    isVideoPlaying = false;             // Odemknout hru
+}
+
+p1Video.addEventListener('ended', () => onVideoEnd(p1Video));
+p2Video.addEventListener('ended', () => onVideoEnd(p2Video));
+
 function animate() {
     requestAnimationFrame(animate);
     if (endgame) {
@@ -450,4 +568,30 @@ function animate() {
         renderer.render(scene, camera);
     }
 }
+
+// NOVÁ FUNKCE: Spustí se mnohokrát za sekundu během přehrávání videa
+function handleTimeUpdate(event) {
+    const video = event.target;
+    
+    // Doba, kdy má fade-out začít (1 sekunda před koncem)
+    // Používáme 1.1 pro jistotu, aby se stihlo spustit
+    const fadeStartTime = video.duration - 1.1; 
+
+    // Spustit pouze pokud video dosáhlo času a pokud jsme fade ještě nespustili
+    if (video.currentTime >= fadeStartTime && !video.fadeStarted) {
+        
+        video.fadeStarted = true; // Značka, abychom to nespustili 20x
+        
+        // Spustit synchronizovaný fade-out
+        video.style.opacity = '0';
+        backgroundOverlay.style.opacity = '0';
+    }
+}
+
+// NOVÉ POSLUCHAČE: Připojení funkce k videím
+p1Video.addEventListener('timeupdate', handleTimeUpdate);
+p2Video.addEventListener('timeupdate', handleTimeUpdate);
+
+animate();
+// Render the scene
 animate();
