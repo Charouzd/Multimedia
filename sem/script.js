@@ -4,7 +4,7 @@ import * as THREE from 'three';
 const p1Video = document.getElementById('p1GoalVideo');
 const p2Video = document.getElementById('p2GoalVideo');
 const backgroundOverlay = document.getElementById('backgroundOverlay');
-import * as THREE from 'three'; 
+
 /** Vítejte v Pongu **/
 
 /*
@@ -74,6 +74,7 @@ var isVideoPlaying = false;
 var yBallspeed=0.06;
 var ballSpeed = 0.06;
 const pressedKeys = {};
+/*
 const KeyActions = {
     87: () => { var tmp=player1.position.y - playerSpeed;if(tmp<=-(cubeH / 2)+(LPH/2)){player1.position.y=-(cubeH / 2)+(LPH/2);}else{player1.position.y=tmp}player1BoundingBox.setFromObject(player1);}, // W key
     83: () => { var tmp=player1.position.y + playerSpeed;if(tmp>=(cubeH / 2)-(LPH/2)){player1.position.y=(cubeH / 2)-(LPH/2);}else{player1.position.y=tmp}player1BoundingBox.setFromObject(player1);}, // S key
@@ -81,6 +82,7 @@ const KeyActions = {
     40: () => { var tmp=player2.position.y + playerSpeed;if(tmp>=(cubeH / 2)-(LPH/2)){player2.position.y=(cubeH / 2)-(LPH/2);}else{player2.position.y=tmp}player2BoundingBox.setFromObject(player2); },
     32:()=>{if(!gameOn && !isVideoPlaying){gameOn=!gameOn;firstMove(); start.play()}}  // DOWN arrow
 };
+*/
 function handleKeyDown(event) {
     pressedKeys[event.keyCode] = true;
 }
@@ -99,17 +101,7 @@ function handleKeyPress() {
         }
     }
 }
-// Create a scene
-const scene = new THREE.Scene();
-var endgame = false;
-var xdir = false;
-var ydir = false;
-var P1Count = 0;
-var P2Count = 0;
-var gameOn = false;
-var yBallspeed = 0.06;
-var ballSpeed = 0.06;
-const pressedKeys = {};
+
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(-50, window.innerWidth / window.innerHeight, 0.2, 8100);
@@ -252,24 +244,10 @@ const KeyActions = {
     32: () => { if (!gameOn) { gameOn = !gameOn; firstMove(); start.play(); } }  // SPACE
 };
 
-function handleKeyDown(event) {
-    pressedKeys[event.keyCode] = true;
-}
 
-function handleKeyUp(event) {
-    pressedKeys[event.keyCode] = false;
-}
 
-function handleKeyPress() {
-    for (const keyCode in pressedKeys) {
-        if (pressedKeys[keyCode]) {
-            const action = KeyActions[keyCode];
-            if (action) {
-                action();
-            }
-        }
-    }
-}
+
+
 
 // Pohyb míčku
 function firstMove() {
@@ -311,8 +289,7 @@ function P2scores(){
         p2GoalAudio.play();
     }, 1000); // za jak dlouho se spustí video po zobrazování overlaye
 
-function P2scores() {
-    if (AI && P2Count < cap * 0.8) { fail.play(); }
+
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
     const GPrectangleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const GP = new THREE.Mesh(GPrectangleGeometry, GPrectangleMaterial);
@@ -321,6 +298,7 @@ function P2scores() {
     gameOn = !gameOn;
     return GP;
 }
+
 //Bod pro P2
 function P1scores(){
     // Vytvoření obdélníku
@@ -349,8 +327,7 @@ function P1scores(){
 
 
 
-function P1scores() {
-    if (AI && P1Count < cap * 0.8) { win.play(); }
+
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
     const GPrectangleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const GP = new THREE.Mesh(GPrectangleGeometry, GPrectangleMaterial);
@@ -592,6 +569,5 @@ function handleTimeUpdate(event) {
 p1Video.addEventListener('timeupdate', handleTimeUpdate);
 p2Video.addEventListener('timeupdate', handleTimeUpdate);
 
-animate();
 // Render the scene
 animate();
