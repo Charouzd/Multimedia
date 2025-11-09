@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 
+// Načtení video elementů
+const p1Video = document.getElementById('p1GoalVideo');
+const p2Video = document.getElementById('p2GoalVideo');
 
 /** Vítejte v Pongu **/
 
@@ -55,6 +58,14 @@ const win = new Howl({
     html5: true,
     // preload: true,
 });
+
+const p1GoalAudio = new Howl({
+    src: ['media/sound/p1_goal.mp3'] // Nahraďte vaší cestou
+});
+const p2GoalAudio = new Howl({
+    src: ['media/sound/p2_goal.mp3'] // Nahraďte vaší cestou
+});
+
 // Create a scene
 const scene = new THREE.Scene();
 var endgame=false;
@@ -63,6 +74,7 @@ var ydir=false;
 var P1Count=0;
 var P2Count=0;
 var gameOn=false;
+var isVideoPlaying = false;
 var yBallspeed=0.06;
 var ballSpeed = 0.06;
 const pressedKeys = {};
@@ -71,7 +83,7 @@ const KeyActions = {
     83: () => { var tmp=player1.position.y + playerSpeed;if(tmp>=(cubeH / 2)-(LPH/2)){player1.position.y=(cubeH / 2)-(LPH/2);}else{player1.position.y=tmp}player1BoundingBox.setFromObject(player1);}, // S key
     38: () => { var tmp=player2.position.y - playerSpeed;if(tmp<=-(cubeH / 2)+(LPH/2)){player2.position.y=-(cubeH / 2)+(LPH/2);}else{player2.position.y=tmp}player2BoundingBox.setFromObject(player2); }, // UP arrow
     40: () => { var tmp=player2.position.y + playerSpeed;if(tmp>=(cubeH / 2)-(LPH/2)){player2.position.y=(cubeH / 2)-(LPH/2);}else{player2.position.y=tmp}player2BoundingBox.setFromObject(player2); },
-    32:()=>{if(!gameOn){gameOn=!gameOn;firstMove(); start.play()}}  // DOWN arrow
+    32:()=>{if(!gameOn && !isVideoPlaying){gameOn=!gameOn;firstMove(); start.play()}}  // DOWN arrow
 };
 function handleKeyDown(event) {
     pressedKeys[event.keyCode] = true;
@@ -220,6 +232,12 @@ function firstMove(){
 function P2scores(){
     // Vytvoření obdélníku
     if(AI && P2Count<cap*0.8){fail.play();}
+
+    isVideoPlaying = true; // <-- ZAMKNOUT HRA
+    p2Video.style.display = 'block'; // Zobrazit video
+    p2Video.play(); // Spustit video
+    p2GoalAudio.play(); //Spustit zvuk videa
+
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
     const GPrectangleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const GP = new THREE.Mesh(GPrectangleGeometry, GPrectangleMaterial);
@@ -232,6 +250,12 @@ function P2scores(){
 function P1scores(){
     // Vytvoření obdélníku
     if(AI && P1Count<cap*0.8){win.play();}
+
+    isVideoPlaying = true; // <-- ZAMKNOUT HRU
+    p1Video.style.display = 'block'; // Zobrazit video
+    p1Video.play(); // Spustit video
+    p1GoalAudio.play(); //Spustit zvuk videa
+
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
     const GPrectangleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const GP = new THREE.Mesh(GPrectangleGeometry, GPrectangleMaterial);
@@ -342,6 +366,14 @@ window.addEventListener('resize', () => {
 // Detekce stisknutí a puštění kláves
 window.addEventListener('keydown', handleKeyDown, false);
 window.addEventListener('keyup', handleKeyUp, false);
+
+function onVideoEnd(videoElement) {
+    videoElement.style.display = 'none'; // Skrýt video
+    videoElement.currentTime = 0;       // Přetočit na začátek
+    isVideoPlaying = false;             // Odemknout hru
+}
+p1Video.addEventListener('ended', () => onVideoEnd(p1Video));
+p2Video.addEventListener('ended', () => onVideoEnd(p2Video));
 
 function animate() {
     requestAnimationFrame(animate);
