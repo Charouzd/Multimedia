@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // Načtení video elementů
 const p1Video = document.getElementById('p1GoalVideo');
 const p2Video = document.getElementById('p2GoalVideo');
-
+const backgroundOverlay = document.getElementById('backgroundOverlay');
 /** Vítejte v Pongu **/
 
 /*
@@ -233,10 +233,24 @@ function P2scores(){
     // Vytvoření obdélníku
     if(AI && P2Count<cap*0.8){fail.play();}
 
-    isVideoPlaying = true; // <-- ZAMKNOUT HRA
-    p2Video.style.display = 'block'; // Zobrazit video
-    p2Video.play(); // Spustit video
-    p2GoalAudio.play(); //Spustit zvuk videa
+    isVideoPlaying = true; // 1. Okamžitě zamknout hru
+
+    // 2. Zobrazit pozadí (ale je stále průhledné)
+    backgroundOverlay.style.display = 'block';
+
+    // 3. Spustit fade-in
+    requestAnimationFrame(() => {
+        backgroundOverlay.style.opacity = '0.8';
+    });
+    
+    // 4. Počkat 1 sekundu
+    setTimeout(() => {
+        // 5. Spustit video a zvuk
+        p2Video.style.display = 'block';
+        p2Video.style.opacity = '1';
+        p2Video.play();
+        p2GoalAudio.play();
+    }, 1000); // za jak dlouho se spustí video po zobrazování overlaye
 
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
     const GPrectangleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -251,10 +265,27 @@ function P1scores(){
     // Vytvoření obdélníku
     if(AI && P1Count<cap*0.8){win.play();}
 
-    isVideoPlaying = true; // <-- ZAMKNOUT HRU
-    p1Video.style.display = 'block'; // Zobrazit video
-    p1Video.play(); // Spustit video
-    p1GoalAudio.play(); //Spustit zvuk videa
+
+    isVideoPlaying = true; // 1. Okamžitě zamknout hru
+
+    // 2. Zobrazit pozadí (ale je stále průhledné)
+    backgroundOverlay.style.display = 'block';
+
+    // 3. Spustit fade-in (změna opacity aktivuje CSS transition)
+    // Používám 80% opacitu, 100% (hodnota '1') je příliš tmavá. Můžete změnit.
+    requestAnimationFrame(() => { // (zajistí plynulý start animace)
+        backgroundOverlay.style.opacity = '0.8'; 
+    });
+
+    // 4. Počkat 1 sekundu (1000ms), než se pozadí dokončí
+    setTimeout(() => {
+        // 5. Po dokončení fade-in spustit video a zvuk
+        p1Video.style.display = 'block';
+        p1Video.style.opacity = '1';
+        p1Video.play();
+        p1GoalAudio.play();
+    }, 1000); // za jak dlouho se spustí video po zobrazování overlaye 
+
 
     const GPrectangleGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
     const GPrectangleMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -367,11 +398,20 @@ window.addEventListener('resize', () => {
 window.addEventListener('keydown', handleKeyDown, false);
 window.addEventListener('keyup', handleKeyUp, false);
 
+
+// Nový kód:
 function onVideoEnd(videoElement) {
     videoElement.style.display = 'none'; // Skrýt video
-    videoElement.currentTime = 0;       // Přetočit na začátek
+    videoElement.fadeStarted = false;    // <-- PŘIDAT: Reset vlajky
+    videoElement.currentTime = 0;
+    
+    // PŘIDÁNO:
+    backgroundOverlay.style.display = 'none'; // Okamžitě skrýt pozadí
+    backgroundOverlay.style.opacity = '0';   // Resetovat opacitu pro příští gól
+
     isVideoPlaying = false;             // Odemknout hru
 }
+
 p1Video.addEventListener('ended', () => onVideoEnd(p1Video));
 p2Video.addEventListener('ended', () => onVideoEnd(p2Video));
 
@@ -396,5 +436,29 @@ function animate() {
     renderer.render(scene, camera);
   }
 }
+
+// NOVÁ FUNKCE: Spustí se mnohokrát za sekundu během přehrávání videa
+function handleTimeUpdate(event) {
+    const video = event.target;
+    
+    // Doba, kdy má fade-out začít (1 sekunda před koncem)
+    // Používáme 1.1 pro jistotu, aby se stihlo spustit
+    const fadeStartTime = video.duration - 1.1; 
+
+    // Spustit pouze pokud video dosáhlo času a pokud jsme fade ještě nespustili
+    if (video.currentTime >= fadeStartTime && !video.fadeStarted) {
+        
+        video.fadeStarted = true; // Značka, abychom to nespustili 20x
+        
+        // Spustit synchronizovaný fade-out
+        video.style.opacity = '0';
+        backgroundOverlay.style.opacity = '0';
+    }
+}
+
+// NOVÉ POSLUCHAČE: Připojení funkce k videím
+p1Video.addEventListener('timeupdate', handleTimeUpdate);
+p2Video.addEventListener('timeupdate', handleTimeUpdate);
+
 animate();
 // Render the scene
