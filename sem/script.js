@@ -1,4 +1,4 @@
-\-uimport * as THREE from 'three';
+import * as THREE from 'three';
 
 // Načtení video elementů
 const p1Video = document.getElementById('p1GoalVideo');
@@ -25,7 +25,6 @@ var AI = false;
 var AIspeed = playerSpeed;
 console.log(cap);
 if (params.AI) { AI = true; AIspeed = parseFloat(params.AIspeed); }
-hjdgfgcjj()
 /*
  *   Načtení zvuků tvorba objektů a skinů
  */

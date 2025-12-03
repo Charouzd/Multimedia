@@ -89,6 +89,7 @@
             // a převést z textu na skutečné JavaScript pole pomocí JSON.parse
             const validniJson = '[' + text + ']'; 
             const seznamObrazku = JSON.parse(validniJson);
+            
 
             // Teď když máme data, naplníme selecty
             generujMoznosti("P1", seznamObrazku, "fire");
