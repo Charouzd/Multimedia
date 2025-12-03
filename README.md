@@ -29,6 +29,8 @@ Hru si můžete velmi snadno spustit lokálně na svém počítači.
 4.  **Spuštění hry:** Ve svém prohlížeči přejděte na adresu:
     `http://localhost:8000`
 
+5. **Vlastní customizace:** Před spuštěním serveru do media/img/ vlož své materiály. Ve windows powershell spušť script s právy pro spuštění `powershell.exe -ExecutionPolicy Bypass -File .\generate_list.ps1`. Aplikuj kroky 3 a 4
+
 ## 📖 Pravidla Hry a Ovládání
 
 ### Ovládání
