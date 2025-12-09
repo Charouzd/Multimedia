@@ -39,6 +39,10 @@
                     <label><h3>Míček</h3></label>
                     <select id="Ball" name="Ball" class="form-control" data-default="melone"></select>
                 </div>
+                <div class="form-group">
+                    <label><h3>Sada zvuků</h3></label>
+                    <select id="SoundPack" name="SoundPack" class="form-control"></select>
+                </div>
 
                 <p>
                     <input class="btn btn-primary mb-2" type="submit" name="submit" id="sub" value="Začít hrát">
@@ -75,6 +79,40 @@
         });
     }
 
+// --- 2. FUNKCE PRO ZVUKY S VÝPISEM CHYB ---
+    function generujZvuky(elementId, dataZvuku) {
+        console.log("Spouštím generování zvuků...");
+        const select = document.getElementById(elementId);
+        
+        if (!select) {
+            console.error(`CHYBA: Element s ID '${elementId}' nebyl v HTML nalezen!`);
+            return;
+        }
+
+        select.innerHTML = "";
+        
+        // Získáme klíče
+        const kategorie = Object.keys(dataZvuku);
+        console.log("Nalezené kategorie zvuků:", kategorie);
+
+        if (kategorie.length === 0) {
+            console.warn("VAROVÁNÍ: JSON se zdá být prázdný nebo nemá klíče.");
+            const option = document.createElement("option");
+            option.text = "Žádné zvuky nenalezeny";
+            select.appendChild(option);
+            return;
+        }
+
+        kategorie.forEach((nazev, index) => {
+            const option = document.createElement("option");
+            option.value = nazev; 
+            option.text = nazev;
+            if (index === 0) option.selected = true;
+            select.appendChild(option);
+        });
+        console.log("Menu zvuků úspěšně naplněno.");
+    }
+
     // --- ZDE JE TA ZMĚNA: NAČTENÍ SOUBORU ---
     fetch('sources.txt')
         .then(response => {
@@ -100,6 +138,17 @@
             console.error("Chyba:", error);
             alert("Pozor: Prohlížeč zablokoval načtení sources.txt. Spusť stránku přes lokální server nebo zkontroluj název souboru.");
         });
+
+    // B) Načtení zvuků (sounds.json) -> volá generujZvuky
+    fetch('sounds.json')
+        .then(res => res.json())
+        .then(data => {
+            // Zde voláme novou funkci čistě pro zvuky
+            generujZvuky("SoundPack", data);
+        })
+        .catch(err => console.error("Chyba sounds.json:", err));
+
+        
 
     // Obsluha odeslání formuláře
     document.getElementById('userForm').addEventListener('submit', function(event) {

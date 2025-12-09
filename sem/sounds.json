@@ -1,0 +1,66 @@
+﻿{
+    "Wood":  [
+                 "Ruch_051.mp3",
+                 "Ruch_052.mp3",
+                 "Ruch_053.mp3",
+                 "WOOD5.mp3"
+             ],
+    "Bonk":  [
+                 "BONK1.wav",
+                 "BONK2.wav"
+             ],
+    "Duck":  [
+                 "DUCK1.mp3",
+                 "DUCK2.mp3",
+                 "DUCK3.mp3",
+                 "DUCK4.mp3",
+                 "DUCK5.mp3",
+                 "DUCK6.mp3",
+                 "DUCK7.mp3"
+             ],
+    "Metal":  [
+                  "CAN_HIT_A1.mp3",
+                  "IRONWARE7A.mp3",
+                  "Ruch_041.mp3",
+                  "Ruch_042.mp3"
+              ],
+    "Chicken":  [
+                    "CHICKEN1.mp3",
+                    "CHICKEN10.mp3",
+                    "CHICKEN11.mp3",
+                    "CHICKEN12.mp3",
+                    "CHICKEN13.mp3",
+                    "CHICKEN14.mp3",
+                    "CHICKEN15.mp3",
+                    "CHICKEN16.mp3",
+                    "CHICKEN17.mp3",
+                    "CHICKEN2.mp3",
+                    "CHICKEN3.mp3",
+                    "CHICKEN4.mp3",
+                    "CHICKEN5.mp3",
+                    "CHICKEN6.mp3",
+                    "CHICKEN7.mp3",
+                    "CHICKEN8.mp3",
+                    "CHICKEN9.mp3"
+                ],
+    "TROLL":  "TROLL.mp3",
+    "Tennis":  [
+                   "L_SWISH.mp3",
+                   "Ruch_01.mp3",
+                   "Ruch_02.mp3",
+                   "TENNIS.mp3",
+                   "TYPE3.mp3"
+               ],
+    "Punch":  [
+                  "PUNCH1.mp3",
+                  "PUNCH2.mp3",
+                  "PUNCH3.mp3"
+              ],
+    "Concrete":  [
+                     "CONCRETE_L2.mp3",
+                     "Ruch_031.mp3",
+                     "Ruch_032.mp3",
+                     "Ruch_033.mp3",
+                     "Ruch_034.mp3"
+                 ]
+}
