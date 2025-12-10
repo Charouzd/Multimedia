@@ -20,7 +20,8 @@ var B = "media/img/melone.jpg";
 if (params.cap) { cap = parseInt(params.cap); }
 if (params.P1) { P1 = params.P1; }
 if (params.P2) { P2 = params.P2; }
-if (params.Ball) { B = params.Ball; }
+var soundPackName = "Tennis"; 
+if (params.SoundPack) { soundPackName = params.SoundPack; }
 var AI = false;
 var AIspeed = playerSpeed;
 console.log(cap);
@@ -33,11 +34,45 @@ const over = new Howl({
     volume: 1,
     html5: true,
 });
-const hit = new Howl({
-    src: ['media/sound/hit.wav'],
-    volume: 0.5,
-    html5: true,
-});
+
+/* NAČTENÍ ZVUKŮ ÚDERU (Dynamic Sound Loading) */
+let hitSounds = []; // Pole pro připravené zvuky
+
+fetch('sounds.json')
+    .then(response => response.json())
+    .then(data => {
+        // Získáme seznam souborů pro vybranou kategorii
+        let files = data[soundPackName];
+        
+        // Ošetření pro případ, že v JSONu není pole, ale jen jeden string (např. "TROLL")
+        if (!Array.isArray(files)) {
+            files = [files];
+        }
+
+        // Naplníme pole hitSounds objekty Howl
+        // DŮLEŽITÉ: Předpokládá strukturu složek media/sound/NazevKategorie/soubor.mp3
+        hitSounds = files.map(filename => {
+            return new Howl({
+                src: [`media/sound/hit/${soundPackName}/${filename}`],
+                volume: 0.5,
+                html5: true
+            });
+        });
+    })
+    .catch(err => console.error("Chyba při načítání zvuků:", err));
+
+// Pomocná funkce pro přehrání náhodného zvuku z balíčku
+function playHitSound() {
+    if (hitSounds.length === 0) {
+        console.warn("⚠️ Voláno playHitSound, ale pole zvuků je prázdné (ještě se nenačetly nebo chyba).");
+        return;
+    }
+    const randomIndex = Math.floor(Math.random() * hitSounds.length);
+    console.log(`🔊 Přehrávám zvuk index: ${randomIndex}`);
+    hitSounds[randomIndex].play();
+}
+//-------------------------------------------------------------------
+
 const fail = new Howl({
     src: ['media/sound/fail.mp3'],
     volume: 1,
@@ -91,6 +126,7 @@ function handleKeyUp(event) {
 }
 
 function handleKeyPress() {
+    if (isVideoPlaying) return;
     for (const keyCode in pressedKeys) {
         if (pressedKeys[keyCode]) {
             const action = KeyActions[keyCode];
@@ -384,8 +420,9 @@ function detectPaddleCollision(paddleBox, ballBox, prevBallPos, paddleSide) {
 
 // Zpracování kolize s pálkou - RANDOM ÚHEL 38-48°
 function handlePaddleCollision(paddle, paddleSide) {
-    hit.play();
-    
+    //hit.play();
+    playHitSound();
+
     // Vrať míček na pozici před kolizí
     ball.position.x -= (ballSpeed * (xdir ? 1 : -1));
     ball.position.y -= (yBallspeed * (ydir ? 1 : -1));
@@ -478,11 +515,13 @@ function moveBall() {
     // Detekce kolize s horní/dolní stěnou
     if ((ball.position.y + ballRadius) >= (cubeH / 2)) {
         ball.position.y = prevBallPos.y;
-        hit.play();
+        //hit.play();
+        playHitSound();
         ydir = false;
     } else if ((ball.position.y - ballRadius) <= -(cubeH / 2)) {
         ball.position.y = prevBallPos.y;
-        hit.play();
+        //hit.play();
+        playHitSound();
         ydir = true;
     }
 
