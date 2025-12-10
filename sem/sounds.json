@@ -24,6 +24,26 @@
                   "Ruch_041.mp3",
                   "Ruch_042.mp3"
               ],
+    "TROLL":  "TROLL.mp3",
+    "Punch":  [
+                  "PUNCH1.mp3",
+                  "PUNCH2.mp3",
+                  "PUNCH3.mp3"
+              ],
+    "Tennis":  [
+                   "L_SWISH.mp3",
+                   "Ruch_01.mp3",
+                   "Ruch_02.mp3",
+                   "TENNIS.mp3",
+                   "TYPE3.mp3"
+               ],
+    "Concrete":  [
+                     "CONCRETE_L2.mp3",
+                     "Ruch_031.mp3",
+                     "Ruch_032.mp3",
+                     "Ruch_033.mp3",
+                     "Ruch_034.mp3"
+                 ],
     "Chicken":  [
                     "CHICKEN1.mp3",
                     "CHICKEN10.mp3",
@@ -42,25 +62,5 @@
                     "CHICKEN7.mp3",
                     "CHICKEN8.mp3",
                     "CHICKEN9.mp3"
-                ],
-    "TROLL":  "TROLL.mp3",
-    "Tennis":  [
-                   "L_SWISH.mp3",
-                   "Ruch_01.mp3",
-                   "Ruch_02.mp3",
-                   "TENNIS.mp3",
-                   "TYPE3.mp3"
-               ],
-    "Punch":  [
-                  "PUNCH1.mp3",
-                  "PUNCH2.mp3",
-                  "PUNCH3.mp3"
-              ],
-    "Concrete":  [
-                     "CONCRETE_L2.mp3",
-                     "Ruch_031.mp3",
-                     "Ruch_032.mp3",
-                     "Ruch_033.mp3",
-                     "Ruch_034.mp3"
-                 ]
+                ]
 }
