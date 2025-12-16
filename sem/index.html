@@ -60,26 +60,45 @@
                 </div>
             </div>
 
-            <script>
-    // Funkce pro generování <option> (stejná jako předtím)
-    function generujMoznosti(elementId, seznam, defaultVal) {
+<script>
+    // --- 1. FUNKCE PRO GENEROVÁNÍ OPTIONŮ ---
+    // Nyní přijímá navíc parametr 'subfolder', aby věděla, do jaké podsložky sáhnout
+    function generujMoznosti(elementId, seznamSouboru, subfolder, defaultVal) {
         const select = document.getElementById(elementId);
-        select.innerHTML = ""; // Vyčistit pro jistotu
+        if (!select) {
+            console.error(`Element s ID '${elementId}' nenalezen.`);
+            return;
+        }
+        select.innerHTML = ""; // Vyčistit seznam
 
-        seznam.forEach(soubor => {
-            const jmeno = soubor.split('.')[0]; 
+        if (!seznamSouboru || seznamSouboru.length === 0) {
+            console.warn(`Pro element '${elementId}' nebyl dodán žádný seznam souborů.`);
             const option = document.createElement("option");
-            option.value = "media/img/" + soubor;
+            option.text = "Žádné soubory";
+            select.appendChild(option);
+            return;
+        }
+
+        seznamSouboru.forEach(soubor => {
+            // Získání názvu bez přípony pro zobrazení v menu
+            const jmeno = soubor.split('.').slice(0, -1).join('.'); 
+            const option = document.createElement("option");
+            
+            // DŮLEŽITÉ: Cesta nyní zahrnuje podsložku (pads/ nebo ball/)
+            option.value = `media/img/${subfolder}/${soubor}`;
+            
+            // Převedení prvního písmene na velké pro hezčí vzhled
             option.text = jmeno.charAt(0).toUpperCase() + jmeno.slice(1);
             
-            if (jmeno === defaultVal) {
+            // Nastavení výchozí hodnoty, pokud odpovídá názvu souboru (bez přípony)
+            if (jmeno.toLowerCase() === defaultVal.toLowerCase()) {
                 option.selected = true;
             }
             select.appendChild(option);
         });
     }
 
-// --- 2. FUNKCE PRO ZVUKY S VÝPISEM CHYB ---
+    // --- 2. FUNKCE PRO ZVUKY (beze změny) ---
     function generujZvuky(elementId, dataZvuku) {
         console.log("Spouštím generování zvuků...");
         const select = document.getElementById(elementId);
@@ -88,15 +107,12 @@
             console.error(`CHYBA: Element s ID '${elementId}' nebyl v HTML nalezen!`);
             return;
         }
-
         select.innerHTML = "";
         
-        // Získáme klíče
         const kategorie = Object.keys(dataZvuku);
         console.log("Nalezené kategorie zvuků:", kategorie);
 
         if (kategorie.length === 0) {
-            console.warn("VAROVÁNÍ: JSON se zdá být prázdný nebo nemá klíče.");
             const option = document.createElement("option");
             option.text = "Žádné zvuky nenalezeny";
             select.appendChild(option);
@@ -113,43 +129,53 @@
         console.log("Menu zvuků úspěšně naplněno.");
     }
 
-    // --- ZDE JE TA ZMĚNA: NAČTENÍ SOUBORU ---
-    fetch('sources.txt')
+    // --- HLAVNÍ LOGIKA: NAČTENÍ DAT ---
+
+    // A) Načtení seznamu obrázků (manifest.json)
+    fetch('manifest.json')
         .then(response => {
             if (!response.ok) {
-                throw new Error("Nepodařilo se načíst sources.txt");
+                throw new Error("Nepodařilo se načíst manifest.json. Spusťte nejprve generovací skript.");
             }
-            return response.text();
+            return response.json(); // Převedeme přímo na JSON objekt
         })
-        .then(text => {
-            // Tvůj text vypadá takto: "a.jpg","b.jpg"
-            // Aby to bylo pole, musíme to obalit hranatými závorkami []
-            // a převést z textu na skutečné JavaScript pole pomocí JSON.parse
-            const validniJson = '[' + text + ']'; 
-            const seznamObrazku = JSON.parse(validniJson);
+        .then(data => {
+            // data.pads obsahuje pole souborů z složky 'pads'
+            // data.balls obsahuje pole souborů z složky 'ball'
             
-
-            // Teď když máme data, naplníme selecty
-            generujMoznosti("P1", seznamObrazku, "fire");
-            generujMoznosti("P2", seznamObrazku, "ice");
-            generujMoznosti("Ball", seznamObrazku, "melone");
+            // Generování možností pro Pálku 1 (bere z 'pads')
+            generujMoznosti("P1", data.pads, "pads", "fire");
+            // Generování možností pro Pálku 2 (bere z 'pads')
+            generujMoznosti("P2", data.pads, "pads", "ice");
+            // Generování možností pro Míček (bere z 'balls')
+            generujMoznosti("Ball", data.balls, "ball", "melone");
         })
         .catch(error => {
-            console.error("Chyba:", error);
-            alert("Pozor: Prohlížeč zablokoval načtení sources.txt. Spusť stránku přes lokální server nebo zkontroluj název souboru.");
+            console.error("Chyba při načítání manifestu:", error);
+            // Vytvoříme nouzové prázdné optiony, aby formulář nebyl úplně rozbitý
+             ["P1", "P2", "Ball"].forEach(id => {
+                 const sel = document.getElementById(id);
+                 if(sel) sel.innerHTML = "<option>Chyba načtení dat</option>";
+             });
+            alert("Chyba: Nepodařilo se načíst seznam obrázků (manifest.json).\n\nUjistěte se, že jste spustili 'generate_manifest.ps1' a že spouštíte stránku přes lokální server.");
         });
 
-    // B) Načtení zvuků (sounds.json) -> volá generujZvuky
+    // B) Načtení zvuků (sounds.json) -> volá generujZvuky (beze změny)
     fetch('sounds.json')
-        .then(res => res.json())
+        .then(res => {
+             if (!res.ok) throw new Error("sounds.json nenalezen");
+             return res.json();
+        })
         .then(data => {
-            // Zde voláme novou funkci čistě pro zvuky
             generujZvuky("SoundPack", data);
         })
-        .catch(err => console.error("Chyba sounds.json:", err));
+        .catch(err => {
+            console.error("Chyba sounds.json:", err);
+             const sel = document.getElementById("SoundPack");
+             if(sel) sel.innerHTML = "<option>Chyba načtení zvuků</option>";
+        });
 
         
-
     // Obsluha odeslání formuláře
     document.getElementById('userForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
