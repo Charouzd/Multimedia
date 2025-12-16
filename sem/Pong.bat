@@ -1,15 +1,15 @@
 @echo off
-:: Nastaven√≠ k√≥dov√°n√≠ pro ƒçe≈°tinu
+:: NastavenÌ kÛdov·nÌ pro Ëeötinu
 chcp 65001 >nul
-:: Nastaven√≠ spr√°vn√© slo≈æky
+:: NastavenÌ spr·vnÈ sloûky
 cd /d "%~dp0"
 
 echo ================================================
 echo        SPOUSTIM HERNI PROJEKT
 echo ================================================
 echo.
-
-:: 1. SPU≈†TƒöN√ç PS1 SKRIPT≈Æ
+ 
+:: 1. SPUäTÃNÕ PS1 SKRIPTŸ
 echo [1/4] Generuji seznamy souboru...
 if exist "generate_list.ps1" (
     powershell -NoProfile -ExecutionPolicy Bypass -File "generate_list.ps1"
@@ -19,10 +19,10 @@ if exist "generate_list_sounds.ps1" (
 )
 echo.
 
-:: 2. KONTROLA PYTHONU (Bezpeƒçnƒõj≈°√≠ metoda)
+:: 2. KONTROLA PYTHONU (BezpeËnÏjöÌ metoda)
 echo [2/4] Kontrola instalace Pythonu...
 
-:: Zkus√≠me spustit p≈ô√≠kaz python --version. Pokud sel≈æe, skoƒç√≠me na chybu.
+:: ZkusÌme spustit p¯Ìkaz python --version. Pokud selûe, skoËÌme na chybu.
 python --version >nul 2>&1
 if %errorlevel% neq 0 goto :CHYBA_PYTHON
 
@@ -30,7 +30,7 @@ if %errorlevel% neq 0 goto :CHYBA_PYTHON
 echo       Python nalezen. OK.
 echo.
 
-:: 3. SPU≈†TƒöN√ç PROJEKTU
+:: 3. SPUäTÃNÕ PROJEKTU
 goto :START_SERVER
 
 :CHYBA_PYTHON
@@ -60,5 +60,5 @@ echo Pro ukonceni zavri toto okno.
 echo.
 python -m http.server 8000
 
-:: Pokud server spadne, skript se nezav≈ôe hned, abys vidƒõl chybu
+:: Pokud server spadne, skript se nezav¯e hned, abys vidÏl chybu
 pause
